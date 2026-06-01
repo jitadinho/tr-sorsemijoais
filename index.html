@@ -16,17 +16,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #d1c4b0;
-    --surface: #4f1313;
-    --card: #492f1d;
-    --card2: #d1c4b0;
+    --bg: #f4ece1;
+    --surface: #f4ece1;
+    --card: #f4ece1;
+    --card2: #f4ece1;
     --accent: #8b6f50;
     --accent2: #8b6f50;
     --red: #f4ece1;
-    --red-bg: rgba(240,112,112,0.12);
-    --green: #6de0a0;
-    --green-bg: rgba(109,224,160,0.12);
-    --text: #f0eaff;
+    --red-bg: #f4ece1;
+    --green: #8b6f50;
+    --green-bg: #f4ece1;
+    --text: #492f1d;
     --text2: #492f1d;
     --text3: #492f1d;
     --border: rgba(200,160,255,0.1);
@@ -279,7 +279,7 @@
 
 <div id="splash">
   <div class="gem">
-    <img src="logo2_offwhite.png" alt="Trésor Semijoias">
+    <img src="logo2_marrom-escuro.png" alt="Trésor Semijoias">
 </div>
   </div>
 </div>
@@ -287,7 +287,7 @@
 <div id="app" style="display:none">
   <div class="topbar">
     <div class="topbar-title">
-      <img src="logo2_offwhite.png" alt="Trésor Semijoias" class="topbar-logo">
+      <img src="logo2_marrom-escuro.png" alt="Trésor Semijoias" class="topbar-logo">
     </div>
     <div class="summary" id="summary"></div>
   </div>
@@ -482,7 +482,7 @@ function render() {
 
   const list = document.getElementById('list');
   if (names.length === 0) {
-    list.innerHTML = `<div class="empty"><div class="gem-big"><img src="logo2_offwhite.png" alt="Trésor Semijoias" class="midbar-logo"></div><p>${tab === 'todos' ? 'Nenhum registro ainda.\nToque + para adicionar.' : 'Nenhum cliente aqui.'}</p></div>`;
+    list.innerHTML = `<div class="empty"><div class="gem-big"><img src="logo2_marrom-escuro.png" alt="Trésor Semijoias" class="midbar-logo"></div><p>${tab === 'todos' ? 'Nenhum registro ainda.\nToque + para adicionar.' : 'Nenhum cliente aqui.'}</p></div>`;
     return;
   }
 

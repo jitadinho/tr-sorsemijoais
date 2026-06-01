@@ -68,6 +68,7 @@
     border-bottom: 1px solid var(--border);
     position: sticky; top: 0; z-index: 100;
   }
+  
   .topbar-title { font-family: var(--serif); font-size: 22px; color: var(--accent2); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
   .topbar-logo {
   width: 100px;
@@ -75,6 +76,13 @@
   object-fit: contain;
   flex-shrink: 0;
   }
+  .midbar-logo {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  flex-shrink: 0;
+  }
+
   .topbar-title span { font-size: 20px; }
 
   /* SUMMARY */
@@ -474,7 +482,7 @@ function render() {
 
   const list = document.getElementById('list');
   if (names.length === 0) {
-    list.innerHTML = `<div class="empty"><div class="gem-big"><img src="logo1_marrom-claro.png" alt="Trésor Semijoias" class="topbar-logo"></div><p>${tab === 'todos' ? 'Nenhum registro ainda.\nToque + para adicionar.' : 'Nenhum cliente aqui.'}</p></div>`;
+    list.innerHTML = `<div class="empty"><div class="gem-big"><img src="logo2_offwhite.png" alt="Trésor Semijoias" class="midbar-logo"></div><p>${tab === 'todos' ? 'Nenhum registro ainda.\nToque + para adicionar.' : 'Nenhum cliente aqui.'}</p></div>`;
     return;
   }
 

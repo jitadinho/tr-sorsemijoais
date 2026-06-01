@@ -69,6 +69,12 @@
     position: sticky; top: 0; z-index: 100;
   }
   .topbar-title { font-family: var(--serif); font-size: 22px; color: var(--accent2); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .topbar-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+  }
   .topbar-title span { font-size: 20px; }
 
   /* SUMMARY */
@@ -273,7 +279,7 @@
 <div id="app" style="display:none">
   <div class="topbar">
     <div class="topbar-title">
-      <img src="logo2_offwhite.png" alt="Trésor Semijoias">
+      <img src="logo2_offwhite.png" alt="Trésor Semijoias" class="topbar-logo">
     </div>
     <div class="summary" id="summary"></div>
   </div>

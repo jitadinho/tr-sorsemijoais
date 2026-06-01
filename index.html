@@ -474,7 +474,7 @@ function render() {
 
   const list = document.getElementById('list');
   if (names.length === 0) {
-    list.innerHTML = `<div class="empty"><div class="gem-big">💎</div><p>${tab === 'todos' ? 'Nenhum registro ainda.\nToque + para adicionar.' : 'Nenhum cliente aqui.'}</p></div>`;
+    list.innerHTML = `<div class="empty"><div class="gem-big"><img src="logo1_marrom-claro.png" alt="Trésor Semijoias" class="topbar-logo"></div><p>${tab === 'todos' ? 'Nenhum registro ainda.\nToque + para adicionar.' : 'Nenhum cliente aqui.'}</p></div>`;
     return;
   }
 

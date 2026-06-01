@@ -1,0 +1,17 @@
+{
+  "name": "Trésor Semijoias",
+  "short_name": "Trésor",
+  "description": "Gerenciador de vendas e contas a receber - Trésor Semijoias",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f0720",
+  "theme-color": "#1a0a2e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo2_offwhite",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

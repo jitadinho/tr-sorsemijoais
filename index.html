@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trésor Semijoias">
+<meta name="theme-color" content="#1a0a2e">
+<title>Trésor Semijoias</title>
+
+<link rel="manifest" href="./manifest.json">
+<link rel="gem" href="logo2_offwhite.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0720;
+    --surface: #1a0f30;
+    --card: #221440;
+    --card2: #2a1850;
+    --accent: #c9a84c;
+    --accent2: #e8c97a;
+    --red: #f07070;
+    --red-bg: rgba(240,112,112,0.12);
+    --green: #6de0a0;
+    --green-bg: rgba(109,224,160,0.12);
+    --text: #f0eaff;
+    --text2: #9880c0;
+    --text3: #6a5090;
+    --border: rgba(200,160,255,0.1);
+/*    --serif: 'DM Serif Display', serif; */
+    --serif: 'Bodoni Moda',serif;
+/*    --sans: 'DM Sans', sans-serif; */
+    --sans: 'Bodoni Moda', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); overflow-x: hidden; }
+
+  /* SPLASH */
+  #splash {
+    position: fixed; inset: 0; background: var(--bg); z-index: 999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    transition: opacity 0.4s;
+  }
+  #splash .gem { font-size: 52px; animation: pulse 1.2s ease-in-out infinite; }
+  #splash h1 { font-family: var(--serif); font-size: 28px; color: var(--accent2); letter-spacing: 1px; }
+  #splash p { font-size: 13px; color: var(--text3); }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
+
+  /* LAYOUT */
+  #app { min-height: 100vh; display: flex; flex-direction: column; }
+  .topbar {
+    background: linear-gradient(135deg, #1a0f30 0%, #0f0720 100%);
+    padding: 52px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-title { font-family: var(--serif); font-size: 22px; color: var(--accent2); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .topbar-title span { font-size: 20px; }
+
+  /* SUMMARY */
+  .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 20px 0; }
+  .stat {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px;
+    position: relative; overflow: hidden;
+  }
+  .stat::before { content:''; position:absolute; top:-20px; right:-20px; width:60px; height:60px; border-radius:50%; background: rgba(201,168,76,0.06); }
+  .stat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .stat-val { font-family: var(--serif); font-size: 22px; color: var(--red); }
+  .stat-val.ok { color: var(--green); }
+
+  /* SEARCH */
+  .search-wrap { padding: 14px 20px 8px; }
+  .search-inner { position: relative; }
+  .search-inner input {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 11px 16px 11px 40px;
+    font-family: var(--sans); font-size: 15px; color: var(--text);
+    outline: none; transition: border-color 0.2s;
+  }
+  .search-inner input::placeholder { color: var(--text3); }
+  .search-inner input:focus { border-color: rgba(201,168,76,0.4); }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 18px; pointer-events: none; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 6px; padding: 10px 20px 14px; }
+  .tab {
+    flex: 1; padding: 8px 0; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border); border-radius: 10px;
+    background: transparent; color: var(--text3); cursor: pointer;
+    transition: all 0.2s; font-family: var(--sans);
+  }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #0f0720; font-weight: 600; }
+
+  /* MAIN */
+  main { flex: 1; padding: 0 16px 100px; }
+
+  /* CLIENT CARD */
+  .client-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; margin-bottom: 10px; overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .client-card.debt-card { border-color: rgba(240,112,112,0.2); }
+  .client-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; cursor: pointer;
+    user-select: none;
+  }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, #3d1f7a, #6b35c8);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 14px; color: var(--accent2);
+    flex-shrink: 0; border: 1px solid rgba(201,168,76,0.2);
+  }
+  .client-info { flex: 1; min-width: 0; }
+  .client-name { font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .client-meta { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .client-right { text-align: right; flex-shrink: 0; }
+  .client-total { font-family: var(--serif); font-size: 18px; }
+  .client-total.debt { color: var(--red); }
+  .client-total.paid { color: var(--green); }
+  .badge {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px; margin-top: 3px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .badge.debt { background: var(--red-bg); color: var(--red); }
+  .badge.ok { background: var(--green-bg); color: var(--green); }
+
+  /* EXPANDED */
+  .client-body { border-top: 1px solid var(--border); padding: 12px 16px; }
+  .item-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid rgba(200,160,255,0.06);
+  }
+  .item-row:last-of-type { border-bottom: none; }
+  .item-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .item-dot.debt { background: var(--red); }
+  .item-dot.pay { background: var(--green); }
+  .item-content { flex: 1; min-width: 0; }
+  .item-desc { font-size: 13px; color: var(--text); }
+  .item-date { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .item-val { font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .item-val.debt { color: var(--red); }
+  .item-val.pay { color: var(--green); }
+  .item-del { background: none; border: none; color: var(--text3); font-size: 18px; padding: 2px 4px; cursor: pointer; border-radius: 6px; }
+  .item-del:active { background: rgba(240,112,112,0.15); }
+
+  /* ACTION BUTTONS */
+  .actions { display: flex; gap: 8px; margin-top: 12px; }
+  .btn-partial-wrap { display: flex; gap: 6px; flex: 1; }
+  .btn-partial-wrap input {
+    flex: 1; background: var(--card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 9px 12px; font-size: 14px;
+    color: var(--text); font-family: var(--sans); outline: none;
+    min-width: 0;
+  }
+  .btn-partial-wrap input:focus { border-color: rgba(109,224,160,0.4); }
+  .btn-partial-wrap input::placeholder { color: var(--text3); }
+  .btn-green {
+    background: var(--green-bg); border: 1px solid rgba(109,224,160,0.3);
+    color: var(--green); padding: 9px 14px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    font-family: var(--sans); flex-shrink: 0;
+  }
+  .btn-quitar {
+    background: var(--green-bg); border: 1px solid rgba(109,224,160,0.3);
+    color: var(--green); padding: 9px 14px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: var(--sans); white-space: nowrap; flex-shrink: 0;
+  }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 40px 20px; color: var(--text3); }
+  .empty .gem-big { font-size: 40px; margin-bottom: 10px; }
+  .empty p { font-size: 14px; }
+
+  /* FAB */
+  .fab {
+    position: fixed; bottom: 28px; right: 20px;
+    width: 58px; height: 58px; border-radius: 18px;
+    background: linear-gradient(135deg, var(--accent), #a07820);
+    border: none; color: #0f0720; font-size: 28px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 200;
+    box-shadow: 0 4px 24px rgba(201,168,76,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .fab:active { transform: scale(0.93); box-shadow: 0 2px 12px rgba(201,168,76,0.2); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(10,4,24,0.85);
+    z-index: 300; display: flex; align-items: flex-end;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s;
+  }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .modal {
+    width: 100%; background: var(--surface);
+    border-radius: 24px 24px 0 0; padding: 20px 20px 40px;
+    border-top: 1px solid var(--border);
+    animation: slideUp 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  .modal-handle { width: 40px; height: 4px; background: var(--text3); border-radius: 2px; margin: 0 auto 20px; }
+  .modal h3 { font-family: var(--serif); font-size: 20px; color: var(--accent2); margin-bottom: 18px; }
+  .field { margin-bottom: 14px; }
+  .field label { font-size: 12px; color: var(--text3); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .field input, .field textarea {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 13px 14px; font-size: 15px;
+    color: var(--text); font-family: var(--sans); outline: none;
+    transition: border-color 0.2s;
+  }
+  .field input:focus, .field textarea:focus { border-color: rgba(201,168,76,0.5); }
+  .field textarea { min-height: 70px; resize: none; }
+  .field input::placeholder, .field textarea::placeholder { color: var(--text3); }
+  .type-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .type-btn {
+    padding: 11px; border-radius: 12px; border: 1px solid var(--border);
+    background: transparent; font-size: 14px; font-weight: 500;
+    cursor: pointer; color: var(--text3); font-family: var(--sans);
+    transition: all 0.15s;
+  }
+  .type-btn.active-debt { background: var(--red-bg); border-color: rgba(240,112,112,0.4); color: var(--red); }
+  .type-btn.active-pay { background: var(--green-bg); border-color: rgba(109,224,160,0.4); color: var(--green); }
+  .btn-save {
+    width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent), #a07820);
+    border: none; border-radius: 14px; color: #0f0720; font-size: 16px;
+    font-weight: 700; font-family: var(--sans); cursor: pointer;
+    margin-top: 6px; letter-spacing: 0.3px;
+    transition: opacity 0.15s;
+  }
+  .btn-save:active { opacity: 0.8; }
+  .btn-modal-cancel {
+    width: 100%; padding: 12px; background: transparent;
+    border: 1px solid var(--border); border-radius: 14px;
+    color: var(--text3); font-size: 15px; font-family: var(--sans);
+    cursor: pointer; margin-top: 8px;
+  }
+
+  /* CHEVRON */
+  .chevron { color: var(--text3); font-size: 14px; transition: transform 0.2s; }
+  .chevron.open { transform: rotate(180deg); }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="gem"></div>
+  <h1>Trésor Semijoias</h1>
+  <p>Carregando...</p>
+</div>
+
+<div id="app" style="display:none">
+  <div class="topbar">
+    <div class="topbar-title"><span></span> Trésor Semijoias</div>
+    <div class="summary" id="summary"></div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-inner">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Buscar cliente..." oninput="render()" autocomplete="off" autocorrect="off" spellcheck="false" />
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('todos',this)">Todos</button>
+    <button class="tab" onclick="setTab('devendo',this)">Devendo</button>
+    <button class="tab" onclick="setTab('quitado',this)">Quitados</button>
+  </div>
+
+  <main id="list"></main>
+
+  <button class="fab" onclick="openModal()" aria-label="Adicionar">＋</button>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal-overlay" style="display:none" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-handle"></div>
+    <h3>Nova entrada</h3>
+    <div class="field">
+      <label>Nome da cliente *</label>
+      <input type="text" id="f-name" placeholder="Ex: Maria Silva" autocomplete="off" />
+      <div id="suggestions" style="margin-top:4px"></div>
+    </div>
+    <div class="field">
+      <label>O que vendeu / observação</label>
+      <textarea id="f-desc" placeholder="Ex: Brinco dourado coração, anel prata..."></textarea>
+    </div>
+    <div class="field">
+      <label>Valor (R$) *</label>
+      <input type="number" id="f-val" placeholder="0,00" step="0.01" min="0" inputmode="decimal" />
+    </div>
+    <div class="field">
+      <label>Tipo</label>
+      <div class="type-btns">
+        <button class="type-btn active-debt" id="t-debt" onclick="setType('debt')">💸 Venda (deve)</button>
+        <button class="type-btn" id="t-pay" onclick="setType('pay')">✅ Pagamento</button>
+      </div>
+    </div>
+    <button class="btn-save" onclick="saveEntry()">Salvar</button>
+    <button class="btn-modal-cancel" onclick="closeModal()">Cancelar</button>
+  </div>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem('fiado_v2') || '[]');
+let tab = 'todos';
+let entryType = 'debt';
+let expanded = {};
+
+setTimeout(() => {
+  document.getElementById('splash').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    render();
+  }, 400);
+}, 800);
+
+function persist() { localStorage.setItem('fiado_v2', JSON.stringify(data)); }
+
+function setTab(t, el) {
+  tab = t;
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function setType(t) {
+  entryType = t;
+  document.getElementById('t-debt').className = 'type-btn' + (t === 'debt' ? ' active-debt' : '');
+  document.getElementById('t-pay').className = 'type-btn' + (t === 'pay' ? ' active-pay' : '');
+}
+
+function openModal() {
+  entryType = 'debt';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-val').value = '';
+  document.getElementById('suggestions').innerHTML = '';
+  setType('debt');
+  document.getElementById('modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('f-name').focus(), 300);
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+function handleOverlayClick(e) {
+  if (e.target.id === 'modal') closeModal();
+}
+
+function initials(name) {
+  return name.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join('');
+}
+
+function getTotal(name) {
+  return data.filter(e => e.name === name)
+    .reduce((s, e) => e.type === 'debt' ? s + e.val : s - e.val, 0);
+}
+
+function formatVal(v) {
+  return 'R$ ' + Math.abs(v).toFixed(2).replace('.', ',');
+}
+
+function today() {
+  return new Date().toLocaleDateString('pt-BR');
+}
+
+// Autocomplete
+document.getElementById('f-name').addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  const sug = document.getElementById('suggestions');
+  if (!q) { sug.innerHTML = ''; return; }
+  const names = [...new Set(data.map(e => e.name))].filter(n => n.toLowerCase().includes(q));
+  if (names.length === 0 || (names.length === 1 && names[0].toLowerCase() === q)) { sug.innerHTML = ''; return; }
+  sug.innerHTML = names.slice(0,4).map(n => `
+    <div onclick="selectName('${n.replace(/'/g,"\\'")}');this.parentNode.innerHTML=''"
+      style="padding:9px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-top:4px;font-size:14px;color:var(--text);cursor:pointer">
+      ${n}
+    </div>`).join('');
+});
+
+function selectName(n) {
+  document.getElementById('f-name').value = n;
+  document.getElementById('suggestions').innerHTML = '';
+}
+
+function saveEntry() {
+  const name = document.getElementById('f-name').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  const val = parseFloat(document.getElementById('f-val').value);
+  if (!name) { alert('Informe o nome da cliente.'); return; }
+  if (!val || val <= 0) { alert('Informe um valor válido.'); return; }
+  data.push({ id: Date.now(), name, desc, val, type: entryType, date: today() });
+  persist();
+  closeModal();
+  render();
+}
+
+function deleteEntry(id) {
+  if (!confirm('Remover este registro?')) return;
+  data = data.filter(e => e.id !== id);
+  persist(); render();
+}
+
+function markPaid(name) {
+  const total = getTotal(name);
+  if (total <= 0) return;
+  if (!confirm(`Quitar R$ ${total.toFixed(2).replace('.',',')} de ${name}?`)) return;
+  data.push({ id: Date.now(), name, desc: 'Pagamento total', val: total, type: 'pay', date: today() });
+  persist(); render();
+}
+
+function addPartial(name) {
+  const input = document.getElementById('pi-' + name.replace(/\s/g,'_'));
+  if (!input) return;
+  const val = parseFloat(input.value);
+  if (!val || val <= 0) { alert('Informe um valor.'); return; }
+  data.push({ id: Date.now(), name, desc: 'Pagamento parcial', val, type: 'pay', date: today() });
+  input.value = '';
+  persist(); render();
+}
+
+function render() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const allNames = [...new Set(data.map(e => e.name))];
+  let names = allNames.filter(n => n.toLowerCase().includes(q));
+  if (tab === 'devendo') names = names.filter(n => getTotal(n) > 0.005);
+  if (tab === 'quitado') names = names.filter(n => getTotal(n) <= 0.005);
+
+  const owing = allNames.filter(n => getTotal(n) > 0.005);
+  const totalOpen = owing.reduce((s, n) => s + getTotal(n), 0);
+  document.getElementById('summary').innerHTML = `
+    <div class="stat">
+      <div class="stat-label">Devendo</div>
+      <div class="stat-val">${owing.length} cliente${owing.length !== 1 ? 's' : ''}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Total aberto</div>
+      <div class="stat-val">${formatVal(totalOpen)}</div>
+    </div>`;
+
+  const list = document.getElementById('list');
+  if (names.length === 0) {
+    list.innerHTML = `<div class="empty"><div class="gem-big">💎</div><p>${tab === 'todos' ? 'Nenhum registro ainda.\nToque + para adicionar.' : 'Nenhum cliente aqui.'}</p></div>`;
+    return;
+  }
+
+  list.innerHTML = names.sort((a,b) => getTotal(b) - getTotal(a)).map(name => {
+    const total = getTotal(name);
+    const items = data.filter(e => e.name === name);
+    const isDebt = total > 0.005;
+    const exp = expanded[name];
+    const safeId = name.replace(/\s/g,'_').replace(/'/g,'');
+
+    const itemsHTML = exp ? `
+      <div class="client-body">
+        ${items.map(e => `
+          <div class="item-row">
+            <div class="item-dot ${e.type}"></div>
+            <div class="item-content">
+              <div class="item-desc">${e.desc || (e.type === 'debt' ? 'Venda' : 'Pagamento')}</div>
+              <div class="item-date">${e.date}</div>
+            </div>
+            <div class="item-val ${e.type}">${e.type === 'debt' ? '-' : '+'}${formatVal(e.val)}</div>
+            <button class="item-del" onclick="deleteEntry(${e.id})">🗑</button>
+          </div>`).join('')}
+        ${isDebt ? `
+          <div class="actions">
+            <div class="btn-partial-wrap">
+              <input type="number" id="pi-${safeId}" placeholder="Valor parcial..." step="0.01" min="0" inputmode="decimal" />
+              <button class="btn-green" onclick="addPartial('${name.replace(/'/g,"\\'")}')">Pagar</button>
+            </div>
+            <button class="btn-quitar" onclick="markPaid('${name.replace(/'/g,"\\'")}')">Quitar tudo</button>
+          </div>` : ''}
+      </div>` : '';
+
+    return `
+      <div class="client-card ${isDebt ? 'debt-card' : ''}">
+        <div class="client-header" onclick="expanded['${name}']=!expanded['${name}'];render()">
+          <div class="avatar">${initials(name)}</div>
+          <div class="client-info">
+            <div class="client-name">${name}</div>
+            <div class="client-meta">${items.length} registro${items.length!==1?'s':''}</div>
+          </div>
+          <div class="client-right">
+            <div class="client-total ${isDebt ? 'debt' : 'paid'}">${formatVal(total)}</div>
+            <span class="badge ${isDebt ? 'debt' : 'ok'}">${isDebt ? 'deve' : 'ok'}</span>
+          </div>
+          <span class="chevron ${exp ? 'open' : ''}">▼</span>
+        </div>
+        ${itemsHTML}
+      </div>`;
+  }).join('');
+}
+</script>
+<script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registrado com sucesso!', reg.scope))
+            .catch(err => console.log('Falha ao registrar o Service Worker:', err));
+        });
+      }
+</script>
+</body>
+</html>

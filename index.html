@@ -44,7 +44,18 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
     transition: opacity 0.4s;
   }
-  #splash .gem { font-size: 52px; animation: pulse 1.2s ease-in-out infinite; }
+  #splash .gem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+#splash .gem img {
+  width: 120px; /* ajuste como preferir */
+  height: auto;
+  display: block;
+}
   #splash h1 { font-family: var(--serif); font-size: 28px; color: var(--accent2); letter-spacing: 1px; }
   #splash p { font-size: 13px; color: var(--text3); }
   @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
